@@ -1,5 +1,5 @@
 import csv, sys, requests
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtWidgets
 from bs4 import BeautifulSoup
 
 ml_url = "https://lista.mercadolivre.com.br/"
@@ -11,28 +11,46 @@ class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        self.button = QtWidgets.QPushButton("Extrair")
-        self.input_1 = QtWidgets.QLineEdit()
-        self.paginas = QtWidgets.QComboBox()
+        self.btn_extrair = QtWidgets.QPushButton("Extrair")
+        self.search_input = QtWidgets.QLineEdit()
+        self.combo_pg = QtWidgets.QComboBox()
+        self.combo_sites = QtWidgets.QComboBox()
+
+        self.lb_pesquisa = QtWidgets.QLabel("Digite o nome do produto que deseja fazer a extração:")
+        self.lb_paginas = QtWidgets.QLabel("Selecione o número de páginas para fazer a extração:")
+        self.lb_sites = QtWidgets.QLabel("Selecione o site que será feito a extração::")
 
         self.layout = QtWidgets.QVBoxLayout(self)
-        self.layout.addWidget(self.input_1)
-        self.layout.addWidget(self.paginas)
-        self.layout.addWidget(self.button)
 
-        self.paginas.addItem('Defina o número de páginas para extrair')
-        self.paginas.addItems(['1','2','3','4','5','6','7','8','9','10'])
-        self.input_1.setPlaceholderText('Digite o nome do produto que deseja fazer a extração')
+        self.layout.addWidget(self.lb_pesquisa)
+        self.layout.addWidget(self.search_input)
+        self.layout.addWidget(self.lb_paginas)
+        self.layout.addWidget(self.combo_pg)
+        self.layout.addWidget(self.lb_sites)
+        self.layout.addWidget(self.combo_sites)
+        self.layout.addWidget(self.btn_extrair)
 
-        self.button.clicked.connect(self.scrapy)
+        self.combo_pg.addItems(['','1','2','3','4','5','6','7','8','9','10'])
+        self.combo_sites.addItems(['','Mercado Livre','Shopee','Magazine Luiza'])
+        self.search_input.setPlaceholderText('Produto...')
+
+        self.btn_extrair.clicked.connect(self.scrapy)
 
     def scrapy(self):
-        paginas = self.paginas.currentText()
-        if paginas == 'Defina o número de páginas para extrair':
+
+        if self.search_input.text() == '':
+            QtWidgets.QMessageBox.warning(self, "Aviso", "O campo do produto não pode estar vazio.")
+            return
+
+        if self.combo_pg.currentText() == '':
             QtWidgets.QMessageBox.warning(self, "Aviso", "Por favor, selecione o número de páginas.")
             return
 
-        base_url = ml_url + self.input_1.text().replace(" ", "-")
+        if self.combo_sites.currentText() == '':
+            QtWidgets.QMessageBox.warning(self, "Aviso", "Por favor, selecione um site.")
+            return
+
+        base_url = ml_url + self.search_input.text().replace(" ", "-")
         file_path, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Salvar Arquivo CSV", "", "Arquivos CSV (*.csv)")
 
         if not file_path:
@@ -41,7 +59,7 @@ class MyWidget(QtWidgets.QWidget):
 
         desde = 1 
         prod_por_pg = 50
-        max_pg = int(paginas)
+        max_pg = int(self.combo_pg.currentText())
         pg_atual = 0
 
         with open(file_path, mode='w', newline='', encoding='utf-8-sig') as file:
@@ -107,7 +125,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication([])
 
     widget = MyWidget()
-    widget.resize(800, 600)
+    widget.resize(700, 350)
     widget.show()
 
     sys.exit(app.exec())
