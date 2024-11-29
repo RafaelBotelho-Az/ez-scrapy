@@ -71,7 +71,8 @@ class MyWidget(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, "Aviso", "Operação cancelada.")
             return
 
-        self.progress_dialog = QtWidgets.QProgressDialog("Executando scraping...", "Cancelar", 0, 0, self)
+        self.progress_dialog = QtWidgets.QProgressDialog("Executando scraping...", "", 0, 0, self)
+        self.progress_dialog.setCancelButton(None)
         self.progress_dialog.setWindowTitle("Aguarde")
         self.progress_dialog.setModal(True)
         self.progress_dialog.show()

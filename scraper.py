@@ -15,14 +15,15 @@ def perform_scraping(product_name, num_pages, site, file_path, progress_signal):
 
     with open(file_path, mode='w', newline='', encoding='utf-8-sig') as file:
         writer = csv.writer(file, delimiter=';')
-        writer.writerow(['Produto', 'Preço', 'Vendedor', 'Nota', 'Avaliações'])
+        writer.writerow(['Produto', 'Preço', 'Vendedor', 'Nota', 'Avaliações', 'Entrega Full?'])
 
         for page in range(num_pages):
-            url = f"{base_url}/_Desde_{desde}_NoIndex_True" if desde > 1 else base_url
+            url = f"{base_url}_Desde_{desde}_NoIndex_True" if desde > 1 else base_url
             response = requests.get(url, headers=HEADERS)
             soup = BeautifulSoup(response.content, 'html.parser')
-
             produtos = soup.find_all('li', class_='ui-search-layout__item')
+
+            print(f"pesquisando na página {url}")
 
             if not produtos:
                 progress_signal.emit("Nenhum produto encontrado.")
@@ -57,6 +58,9 @@ def perform_scraping(product_name, num_pages, site, file_path, progress_signal):
                 else:
                     total_avaliacao = "Sem Avaliações"
 
-                writer.writerow([titulo, preco_completo, seller_name, produto_rate, total_avaliacao])
+                entrega_full = produto.find('span', class_='poly-component__shipped-from')
+                entrega_full = 'Sim' if entrega_full else 'Não'
+
+                writer.writerow([titulo, preco_completo, seller_name, produto_rate, total_avaliacao, entrega_full])
 
             desde += prod_por_pg
