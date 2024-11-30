@@ -7,11 +7,10 @@ HEADERS = {
 }
 ML_URL = "https://lista.mercadolivre.com.br/"
 
-def perform_scraping(product_name, num_pages, site, file_path, progress_signal):
+def perform_scraping_ml(product_name, num_pages, site, file_path, progress_signal):
     base_url = ML_URL + product_name.replace(" ", "-")
     desde = 1
     prod_por_pg = 50
-
 
     with open(file_path, mode='w', newline='', encoding='utf-8-sig') as file:
         writer = csv.writer(file, delimiter=';')
@@ -49,7 +48,7 @@ def perform_scraping(product_name, num_pages, site, file_path, progress_signal):
                 seller_name = seller_tag.text.strip() if seller_tag else "Seller não identificado"
 
                 produto_rate_tag = produto.find('span', class_='poly-reviews__rating')
-                produto_rate = produto_rate_tag.text.strip() if produto_rate_tag else "Sem Avaliações"
+                produto_rate = produto_rate_tag.text.strip() if produto_rate_tag else "Sem Nota"
 
                 avaliacao_tag = produto.find('span', class_='poly-reviews__total')
                 if avaliacao_tag:

@@ -1,5 +1,6 @@
 from PySide6 import QtWidgets, QtCore
-from scraper import perform_scraping
+from scraper_ml import perform_scraping_ml
+from scraper_mg import perform_scraping_mg
 
 
 class ScraperThread(QtCore.QThread):
@@ -14,8 +15,13 @@ class ScraperThread(QtCore.QThread):
         self.file_path = file_path
 
     def run(self):
-        perform_scraping(self.product_name, self.num_pages, self.site, self.file_path, self.progress)
-        self.finished.emit("Scraping concluído com sucesso!")
+        if self.site == "Mercado Livre":
+            perform_scraping_ml(self.product_name, self.num_pages, self.site, self.file_path, self.progress)
+            self.finished.emit("Scraping concluído com sucesso!")
+        elif self.site == "Magazine Luiza":
+            perform_scraping_mg(self.product_name, self.num_pages, self.site, self.file_path, self.progress)
+            self.finished.emit("Scraping concluído com sucesso!")
+
 
 class MyWidget(QtWidgets.QWidget):
     def __init__(self):
