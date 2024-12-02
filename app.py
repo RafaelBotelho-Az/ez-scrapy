@@ -1,4 +1,5 @@
 from PySide6 import QtWidgets, QtCore
+from PySide6.QtGui import QIcon
 from scraper_ml import perform_scraping_ml
 from scraper_mg import perform_scraping_mg
 
@@ -26,6 +27,8 @@ class ScraperThread(QtCore.QThread):
 class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        icon = QIcon('resources/icone.png')
+        self.setWindowIcon(icon)
         self.setObjectName("MainWindow")
         self.btn_extrair = QtWidgets.QPushButton("EXTRAIR")
         self.search_input = QtWidgets.QLineEdit()
@@ -49,8 +52,8 @@ class MyWidget(QtWidgets.QWidget):
         self.layout.addWidget(self.btn_extrair)
         self.layout.addItem(self.spacer)
 
-        self.combo_pg.addItems(['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
-        self.combo_sites.addItems(['', 'Mercado Livre', 'Shopee', 'Magazine Luiza'])
+        self.combo_pg.addItems(['','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'])
+        self.combo_sites.addItems(['', 'Mercado Livre', 'Magazine Luiza'])
         self.search_input.setPlaceholderText('Produto...')
 
         self.btn_extrair.clicked.connect(self.scrapy)

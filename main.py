@@ -4,6 +4,7 @@ from app import MyWidget
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
+    app.setApplicationName('Ez - Scrapy')
 
     try:
         with open("resources/styles.qss", "r") as style_file:
